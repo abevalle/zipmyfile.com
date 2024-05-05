@@ -21,7 +21,7 @@ export default function Upload() {
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
                     Upload More:
-                    <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Drag more files into the are below. When you"re ready press Zip on the bottom right.</p>
+                    <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Drag more files into the are below. When youre ready press Zip on the bottom right.</p>
                 </caption>
                 <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
