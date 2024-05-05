@@ -35,34 +35,7 @@ export default function Upload() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="bg-white dark:bg-gray-800">
-                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Apple MacBook Pro 17".pdf
-                        </th>
-                        <td className="px-6 py-4">
-                            23kb
-                        </td>
-                        <td><a href="#">Delete</a></td>
-                    </tr>
-                    <tr className="bg-white dark:bg-gray-800">
-                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Microsoft Surface Pro
-                        </th>
-                        <td className="px-6 py-4">
-                            23 kb
-                        </td>
-                        <td><a href="#">Delete</a></td>
 
-                    </tr>
-                    <tr className="bg-white dark:bg-gray-800">
-                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Magic Mouse 2
-                        </th>
-                        <td className="px-6 py-4">
-                        14 kb
-                        </td>
-                        <td><a href="#">Delete</a></td>
-                    </tr>
                 </tbody>
             </table>
         </div>
