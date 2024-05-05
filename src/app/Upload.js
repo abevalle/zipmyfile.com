@@ -1,9 +1,9 @@
-import Image from 'next/image'
+import Image from "next/image"
 
 export default function Upload() {
   return (
-    <div className='upload'>
-        <div className='flex justify-center'>
+    <div className="upload">
+        <div className="flex justify-center">
             <div className="w-1/2">
                 <label for="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -21,7 +21,7 @@ export default function Upload() {
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
                     Upload More:
-                    <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Drag more files into the are below. When you're ready press Zip on the bottom right.</p>
+                    <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Drag more files into the are below. When you"re ready press Zip on the bottom right.</p>
                 </caption>
                 <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -42,7 +42,7 @@ export default function Upload() {
                         <td className="px-6 py-4">
                             23kb
                         </td>
-                        <td><a href='#'>Delete</a></td>
+                        <td><a href="#">Delete</a></td>
                     </tr>
                     <tr className="bg-white dark:bg-gray-800">
                         <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -51,7 +51,7 @@ export default function Upload() {
                         <td className="px-6 py-4">
                             23 kb
                         </td>
-                        <td><a href='#'>Delete</a></td>
+                        <td><a href="#">Delete</a></td>
 
                     </tr>
                     <tr className="bg-white dark:bg-gray-800">
@@ -61,7 +61,7 @@ export default function Upload() {
                         <td className="px-6 py-4">
                         14 kb
                         </td>
-                        <td><a href='#'>Delete</a></td>
+                        <td><a href="#">Delete</a></td>
                     </tr>
                 </tbody>
             </table>
