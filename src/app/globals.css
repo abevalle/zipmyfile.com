@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.upload {
+    margin: 15px;
+}
