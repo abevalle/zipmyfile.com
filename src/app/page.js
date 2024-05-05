@@ -7,8 +7,8 @@ export default function Home() {
   return (
     <main className="bg-gray-800">
       <Nav/>
-      <div class="flex mb-4 h-svh">
-        <div class="w-full">
+      <div className="flex mb-4 h-svh">
+        <div className="w-full">
           <Upload/>
         </div>
       </div>
