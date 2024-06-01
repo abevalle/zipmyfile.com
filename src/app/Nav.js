@@ -2,22 +2,6 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-// Higher-order component to filter out unwanted attributes
-const filterAttributes = (Component, filterProps) => {
-  return (props) => {
-    const filteredProps = Object.keys(props).reduce((acc, key) => {
-      if (!filterProps.includes(key)) {
-        acc[key] = props[key];
-      }
-      return acc;
-    }, {});
-    return <Component {...filteredProps} />;
-  };
-};
-
-// Example usage with a div
-const CleanDiv = filterAttributes('div', ['data-new-gr-c-s-check-loaded', 'data-gr-ext-installed']);
-
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
