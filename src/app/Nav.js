@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import ReactGA from 'react-ga4';
+
+const GA_TRACKING_ID = 'G-3TVBTMF9JR';
+
+ReactGA.initialize(GA_TRACKING_ID);
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+
+    // Google Analytics event for menu toggle
+    ReactGA.event({
+      category: 'Navigation',
+      action: 'Toggle Menu',
+      label: menuOpen ? 'Close Menu' : 'Open Menu',
+    });
   };
 
   return (

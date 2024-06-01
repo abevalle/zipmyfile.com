@@ -1,8 +1,26 @@
-// src/pages/_app.js
 import '../styles/globals.css';
 import Head from 'next/head';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import ReactGA from 'react-ga4';
+
+const GA_TRACKING_ID = 'G-3TVBTMF9JR';
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    ReactGA.initialize(GA_TRACKING_ID);
+
+    const handleRouteChange = (url) => {
+      ReactGA.send({ hitType: 'pageview', page: url });
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
       <Head>

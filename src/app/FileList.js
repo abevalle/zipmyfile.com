@@ -1,8 +1,12 @@
-// src/app/FileList.js
 'use client'
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faFolder, faFolderOpen, faTrashAlt, faBroom } from '@fortawesome/free-solid-svg-icons';
+import ReactGA from 'react-ga4';
+
+const GA_TRACKING_ID = 'G-3TVBTMF9JR';
+
+ReactGA.initialize(GA_TRACKING_ID);
 
 const FileTree = ({ node, path = '', onDelete, collapsedDirs, toggleCollapse }) => {
   return Object.keys(node).map((key) => {
@@ -25,7 +29,7 @@ const FileTree = ({ node, path = '', onDelete, collapsedDirs, toggleCollapse }) 
             {key}
           </span>
           <span className="text-gray-400 text-sm">{isFile && `${(node[key].file.size / 1024).toFixed(2)} KB`}</span>
-          <button onClick={() => onDelete(fullPath)} className="ml-auto text-red-500 hover:text-red-700">
+          <button onClick={() => handleDelete(fullPath)} className="ml-auto text-red-500 hover:text-red-700">
             <FontAwesomeIcon icon={faTrashAlt} />
           </button>
         </div>
@@ -37,6 +41,15 @@ const FileTree = ({ node, path = '', onDelete, collapsedDirs, toggleCollapse }) 
       </div>
     );
   });
+
+  function handleDelete(fullPath) {
+    onDelete(fullPath);
+    ReactGA.event({
+      category: 'User Interaction',
+      action: 'Delete File',
+      label: `Deleted file: ${fullPath}`,
+    });
+  }
 };
 
 export default function FileList({ files = [], onDelete }) {
@@ -44,6 +57,11 @@ export default function FileList({ files = [], onDelete }) {
 
   const deleteAllFiles = () => {
     onDelete([]);
+    ReactGA.event({
+      category: 'User Interaction',
+      action: 'Delete All Files',
+      label: 'Deleted all files',
+    });
   };
 
   if (files.length === 0) {

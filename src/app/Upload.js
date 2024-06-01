@@ -4,6 +4,7 @@ import { zipSync } from 'fflate';
 import CompressionOptions from './CompressionOptions';
 import { words } from './words';
 import ToggleSwitch from './ToggleSwitch';
+import ReactGA from 'react-ga4';
 
 export default function Upload({ files, setFiles }) {
   const [message, setMessage] = useState('');
@@ -49,6 +50,14 @@ export default function Upload({ files, setFiles }) {
     const newFileObjects = newFiles.map((file) => ({ file, path: file.webkitRelativePath || file.name }));
     setFiles((prevFiles) => [...prevFiles, ...newFileObjects]);
     setWarning('');
+
+    // Google Analytics event for file upload
+    ReactGA.event({
+      category: 'User Interaction',
+      action: 'File Upload',
+      label: 'Files Uploaded',
+      value: newFiles.length,
+    });
   };
 
   const handleDrop = async (event) => {
@@ -77,6 +86,14 @@ export default function Upload({ files, setFiles }) {
 
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     setWarning('');
+
+    // Google Analytics event for file drop
+    ReactGA.event({
+      category: 'User Interaction',
+      action: 'File Drop',
+      label: 'Files Dropped',
+      value: newFiles.length,
+    });
   };
 
   const handleDragOver = (event) => {
@@ -144,6 +161,14 @@ export default function Upload({ files, setFiles }) {
           setLoading(false);
           setEta('');
           setCurrentFile('');
+
+          // Google Analytics event for file compression
+          ReactGA.event({
+            category: 'User Interaction',
+            action: 'File Compression',
+            label: 'Files Compressed',
+            value: files.length,
+          });
         }
       };
       reader.readAsArrayBuffer(file);
