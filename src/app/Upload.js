@@ -1,9 +1,9 @@
-// src/app/Upload.js
 'use client'
 import { useEffect, useRef, useState } from 'react';
 import { zipSync } from 'fflate';
 import CompressionOptions from './CompressionOptions';
 import { words } from './words';
+import ToggleSwitch from './ToggleSwitch';
 
 export default function Upload({ files, setFiles }) {
   const [message, setMessage] = useState('');
@@ -13,6 +13,8 @@ export default function Upload({ files, setFiles }) {
   const [warning, setWarning] = useState('');
   const [progress, setProgress] = useState(0);
   const [eta, setEta] = useState('');
+  const [currentFile, setCurrentFile] = useState('');
+  const [isDirectoryUpload, setIsDirectoryUpload] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -42,6 +44,8 @@ export default function Upload({ files, setFiles }) {
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
+    if (newFiles.length === 0) return;
+
     const newFileObjects = newFiles.map((file) => ({ file, path: file.webkitRelativePath || file.name }));
     setFiles((prevFiles) => [...prevFiles, ...newFileObjects]);
     setWarning('');
@@ -91,6 +95,10 @@ export default function Upload({ files, setFiles }) {
     setZipFileName(event.target.value);
   };
 
+  const toggleUploadMode = () => {
+    setIsDirectoryUpload(!isDirectoryUpload);
+  };
+
   const zipFiles = () => {
     if (files.length === 0) {
       setWarning('No files uploaded. Please upload files before attempting to compress.');
@@ -100,6 +108,7 @@ export default function Upload({ files, setFiles }) {
     setLoading(true);
     setProgress(0);
     setEta('');
+    setCurrentFile('');
 
     const totalSize = files.reduce((acc, fileObj) => acc + fileObj.file.size, 0);
     const startTime = Date.now();
@@ -112,6 +121,7 @@ export default function Upload({ files, setFiles }) {
       reader.onload = function (e) {
         fileData[path] = new Uint8Array(e.target.result);
         processedSize += file.size;
+        setCurrentFile(path);
 
         const elapsedTime = (Date.now() - startTime) / 1000;
         const progress = (processedSize / totalSize) * 100;
@@ -133,6 +143,7 @@ export default function Upload({ files, setFiles }) {
           document.body.removeChild(link);
           setLoading(false);
           setEta('');
+          setCurrentFile('');
         }
       };
       reader.readAsArrayBuffer(file);
@@ -142,18 +153,19 @@ export default function Upload({ files, setFiles }) {
   return (
     <div className="p-4">
       <h1 className="text-white">{message}</h1>
+      <ToggleSwitch isDirectoryUpload={isDirectoryUpload} toggleUploadMode={toggleUploadMode} />
       <div 
         onDrop={handleDrop} 
         onDragOver={handleDragOver} 
         onClick={handleClick}
         className="border-dashed border-2 border-gray-400 p-4 my-2 text-white text-center rounded cursor-pointer"
       >
-        Click to upload or drag and drop files or directories here
+        {isDirectoryUpload ? "Click to upload a directory or drag and drop files/directories here" : "Click to upload files or drag and drop files here"}
         <input 
           type="file" 
-          multiple 
-          webkitdirectory=""
-          directory=""
+          multiple={!isDirectoryUpload}
+          webkitdirectory={isDirectoryUpload ? "true" : undefined}
+          directory={isDirectoryUpload ? "true" : undefined}
           onChange={handleFileChange} 
           ref={fileInputRef} 
           style={{ display: 'none' }} 
@@ -179,7 +191,13 @@ export default function Upload({ files, setFiles }) {
       )}
       {loading && (
         <div className="text-white mt-2">
+          <p>Current file: {currentFile}</p>
           <p>ETA: {eta} seconds</p>
+        </div>
+      )}
+      {files.length > 0 && (
+        <div className="text-white mt-2">
+          <p>{files.length} files added.</p>
         </div>
       )}
     </div>

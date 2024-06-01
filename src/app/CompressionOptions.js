@@ -1,4 +1,3 @@
-// src/app/CompressionOptions.js
 'use client'
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +16,7 @@ export default function CompressionOptions({ onCompressionChange, onZipFileNameC
               id="zipFileName"
               value={zipFileName}
               onChange={onZipFileNameChange}
-              className="flex-grow p-2 bg-gray-800 border border-gray-600 rounded-l text-white"
+              className="flex-grow p-2 bg-gray-800 border border-gray-600 rounded-l text-white truncate"
               placeholder="Enter ZIP file name"
             />
             <button

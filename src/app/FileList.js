@@ -2,7 +2,7 @@
 'use client'
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFile, faFolder, faFolderOpen, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faFolder, faFolderOpen, faTrashAlt, faBroom } from '@fortawesome/free-solid-svg-icons';
 
 const FileTree = ({ node, path = '', onDelete, collapsedDirs, toggleCollapse }) => {
   return Object.keys(node).map((key) => {
@@ -42,6 +42,10 @@ const FileTree = ({ node, path = '', onDelete, collapsedDirs, toggleCollapse }) 
 export default function FileList({ files = [], onDelete }) {
   const [collapsedDirs, setCollapsedDirs] = useState({});
 
+  const deleteAllFiles = () => {
+    onDelete([]);
+  };
+
   if (files.length === 0) {
     return <div className="mt-4 p-4 bg-gray-700 rounded text-white">No files staged for compression</div>;
   }
@@ -67,8 +71,15 @@ export default function FileList({ files = [], onDelete }) {
   };
 
   return (
-    <div className="mt-4 p-4 bg-gray-700 rounded overflow-y-auto max-h-[75vh] md:max-h-[75vh]">
+    <div className="mt-4 p-4 bg-gray-700 rounded overflow-y-auto max-h-[75vh] md:max-h-[75vh] relative">
       <h2 className="text-lg font-bold text-white mb-2">Files staged for compression:</h2>
+      <button 
+        onClick={deleteAllFiles} 
+        className="absolute top-2 right-2 text-white" 
+        title="Delete all files"
+      >
+        <FontAwesomeIcon icon={faBroom} />
+      </button>
       <div className="ml-2">
         <FileTree node={fileTree} onDelete={onDelete} collapsedDirs={collapsedDirs} toggleCollapse={toggleCollapse} />
       </div>
