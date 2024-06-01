@@ -18,7 +18,7 @@ const filterAttributes = (Component, filterProps) => {
 // Example usage with a div
 const CleanDiv = filterAttributes('div', ['data-new-gr-c-s-check-loaded', 'data-gr-ext-installed']);
 
-export default function Nav() {
+const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -28,9 +28,9 @@ export default function Nav() {
   return (
     <CleanDiv className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            ZipMyFile.com
+            ZipMyFile
           </span>
         </a>
         <button
@@ -59,4 +59,8 @@ export default function Nav() {
       </div>
     </CleanDiv>
   );
-}
+};
+
+Nav.displayName = 'Nav';
+
+export default Nav;
