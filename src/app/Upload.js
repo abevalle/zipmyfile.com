@@ -1,46 +1,187 @@
-import Image from "next/image"
+// src/app/Upload.js
+'use client'
+import { useEffect, useRef, useState } from 'react';
+import { zipSync } from 'fflate';
+import CompressionOptions from './CompressionOptions';
+import { words } from './words';
 
-export default function Upload() {
+export default function Upload({ files, setFiles }) {
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [compressionLevel, setCompressionLevel] = useState(6);
+  const [zipFileName, setZipFileName] = useState(generateRandomName());
+  const [warning, setWarning] = useState('');
+  const [progress, setProgress] = useState(0);
+  const [eta, setEta] = useState('');
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const initWasm = async () => {
+      const response = await fetch('/wasm_zipper_rust_bg.wasm');
+      const buffer = await response.arrayBuffer();
+      const wasm = await WebAssembly.instantiate(buffer, {});
+      const { greet } = wasm.instance.exports;
+      setMessage(greet('User'));
+    };
+    initWasm();
+  }, []);
+
+  function generateRandomName() {
+    const getRandomWord = () => words[Math.floor(Math.random() * words.length)];
+    const randomWord1 = getRandomWord();
+    const randomWord2 = getRandomWord();
+    const randomTwoDigitNumber = Math.floor(Math.random() * 90 + 10).toString();
+    const date = new Date();
+    const mmddyy = `${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${String(date.getFullYear()).slice(-2)}`;
+    return `${randomWord1}-${randomWord2}-${randomTwoDigitNumber}-${mmddyy}`;
+  }
+
+  const generateNewName = () => {
+    setZipFileName(generateRandomName());
+  };
+
+  const handleFileChange = (event) => {
+    const newFiles = Array.from(event.target.files);
+    const newFileObjects = newFiles.map((file) => ({ file, path: file.webkitRelativePath || file.name }));
+    setFiles((prevFiles) => [...prevFiles, ...newFileObjects]);
+    setWarning('');
+  };
+
+  const handleDrop = async (event) => {
+    event.preventDefault();
+    const newFiles = [];
+
+    const readEntries = async (entry, path = '') => {
+      if (entry.isFile) {
+        const file = await new Promise((resolve) => entry.file(resolve));
+        newFiles.push({ file, path: path + entry.name });
+      } else if (entry.isDirectory) {
+        const reader = entry.createReader();
+        const entries = await new Promise((resolve) => reader.readEntries(resolve));
+        for (const subEntry of entries) {
+          await readEntries(subEntry, path + entry.name + '/');
+        }
+      }
+    };
+
+    for (const item of event.dataTransfer.items) {
+      const entry = item.webkitGetAsEntry();
+      if (entry) {
+        await readEntries(entry);
+      }
+    }
+
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    setWarning('');
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleCompressionLevelChange = (level) => {
+    setCompressionLevel(level);
+  };
+
+  const handleZipFileNameChange = (event) => {
+    setZipFileName(event.target.value);
+  };
+
+  const zipFiles = () => {
+    if (files.length === 0) {
+      setWarning('No files uploaded. Please upload files before attempting to compress.');
+      return;
+    }
+
+    setLoading(true);
+    setProgress(0);
+    setEta('');
+
+    const totalSize = files.reduce((acc, fileObj) => acc + fileObj.file.size, 0);
+    const startTime = Date.now();
+
+    const fileData = {};
+    let processedSize = 0;
+
+    files.forEach(({ file, path }, index) => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        fileData[path] = new Uint8Array(e.target.result);
+        processedSize += file.size;
+
+        const elapsedTime = (Date.now() - startTime) / 1000;
+        const progress = (processedSize / totalSize) * 100;
+        setProgress(progress);
+
+        const estimatedTotalTime = (elapsedTime / progress) * 100;
+        const eta = Math.max(0, estimatedTotalTime - elapsedTime).toFixed(2);
+        setEta(eta);
+
+        if (Object.keys(fileData).length === files.length) {
+          const zipped = zipSync(fileData, { level: compressionLevel });
+          const blob = new Blob([zipped], { type: 'application/zip' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${zipFileName}.zip`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setLoading(false);
+          setEta('');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
   return (
-    <div className="upload">
-        <div className="flex justify-center">
-            <div className="w-1/2">
-                <label for="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                        </svg>
-                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                    </div>
-                    <input id="dropzone-file" type="file" className="hidden" />
-                </label>
-            </div>
+    <div className="p-4">
+      <h1 className="text-white">{message}</h1>
+      <div 
+        onDrop={handleDrop} 
+        onDragOver={handleDragOver} 
+        onClick={handleClick}
+        className="border-dashed border-2 border-gray-400 p-4 my-2 text-white text-center rounded cursor-pointer"
+      >
+        Click to upload or drag and drop files or directories here
+        <input 
+          type="file" 
+          multiple 
+          webkitdirectory=""
+          directory=""
+          onChange={handleFileChange} 
+          ref={fileInputRef} 
+          style={{ display: 'none' }} 
+        />
+      </div>
+      {warning && <p className="text-red-500">{warning}</p>}
+      <CompressionOptions 
+        onCompressionChange={handleCompressionLevelChange} 
+        onZipFileNameChange={handleZipFileNameChange}
+        zipFileName={zipFileName}
+        compressionLevel={compressionLevel}
+        generateNewName={generateNewName}
+      />
+      <button onClick={zipFiles} className="my-2 p-2 bg-blue-500 text-white rounded" disabled={loading}>
+        {loading ? 'Compressing...' : 'Download ZIP'}
+      </button>
+      {loading && (
+        <div className="w-full bg-gray-800 rounded mt-4">
+          <div className="bg-blue-500 text-xs font-medium text-white text-center p-0.5 leading-none rounded" style={{ width: `${progress}%` }}> 
+            {progress.toFixed(2)}%
+          </div>
         </div>
-        <div className="relative overflow-x-auto hidden">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-                    Upload More:
-                    <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Drag more files into the are below. When youre ready press Zip on the bottom right.</p>
-                </caption>
-                <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" className="px-6 py-3 rounded-s-lg">
-                            File name
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Size
-                        </th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
+      )}
+      {loading && (
+        <div className="text-white mt-2">
+          <p>ETA: {eta} seconds</p>
         </div>
-
-
+      )}
     </div>
-  )
+  );
 }
