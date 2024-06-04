@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Nav from './Nav';
 import Upload from './Upload';
 import FileList from './FileList';
+import Footer from './Footer';
 
 export default function Home() {
   const [files, setFiles] = useState([]);
@@ -13,16 +14,19 @@ export default function Home() {
   };
 
   return (
-    <main className="bg-gray-800 min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-800">
       <Nav />
-      <div className="flex flex-col md:flex-row md:space-x-4 p-4">
-        <div className="md:w-1/2">
-          <Upload files={files} setFiles={setFiles} />
+      <main className="flex-grow">
+        <div className="flex flex-col md:flex-row md:space-x-4 p-4">
+          <div className="md:w-1/2">
+            <Upload files={files} setFiles={setFiles} />
+          </div>
+          <div className="md:w-1/2">
+            <FileList files={files} onDelete={handleDelete} />
+          </div>
         </div>
-        <div className="md:w-1/2">
-          <FileList files={files} onDelete={handleDelete} />
-        </div>
-      </div>
-    </main>
+      </main>
+      <Footer />
+    </div>
   );
 }

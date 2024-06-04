@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import Head from 'next/head';
+import Footer from '../components/Footer'; // Adjust path if needed
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
@@ -41,7 +42,9 @@ function MyApp({ Component, pageProps }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Component {...pageProps} />
+      <div className="flex flex-col min-h-screen">
+        <Component {...pageProps} />
+      </div>
     </>
   );
 }
