@@ -40,8 +40,8 @@ function MyApp({ Component, pageProps }) {
         <meta name="twitter:description" content="Compress your files quickly and efficiently with ZipMyFile. Save space and reduce file size effortlessly." />
         <meta name="twitter:image" content="meta-image.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="./favicon.ico" />
+        <link rel="manifest" href="./manifest.json" />
         <meta name="theme-color" content="#000000" />
         <link rel="apple-touch-icon" href="/icons/android/icon-192x192.png" />
       </Head>
