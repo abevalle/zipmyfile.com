@@ -6,6 +6,10 @@ import { words } from './words';
 import ToggleSwitch from './ToggleSwitch';
 import ReactGA from 'react-ga4';
 
+const GA_TRACKING_ID = 'G-3TVBTMF9JR';
+
+ReactGA.initialize(GA_TRACKING_ID);
+
 export default function Upload({ files, setFiles }) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -177,13 +181,13 @@ export default function Upload({ files, setFiles }) {
 
   return (
     <div className="p-4">
-      <h1 className="text-white">{message}</h1>
+      <h1 className="text-gray-900 dark:text-white">{message}</h1>
       <ToggleSwitch isDirectoryUpload={isDirectoryUpload} toggleUploadMode={toggleUploadMode} />
       <div 
         onDrop={handleDrop} 
         onDragOver={handleDragOver} 
         onClick={handleClick}
-        className="border-dashed border-2 border-gray-400 p-4 my-2 text-white text-center rounded cursor-pointer"
+        className="border-dashed border-2 border-gray-400 dark:border-gray-600 p-4 my-2 text-gray-900 dark:text-white text-center rounded cursor-pointer"
       >
         {isDirectoryUpload ? "Click to upload a directory or drag and drop files/directories here" : "Click to upload files or drag and drop files here"}
         <input 
@@ -196,7 +200,7 @@ export default function Upload({ files, setFiles }) {
           style={{ display: 'none' }} 
         />
       </div>
-      {warning && <p className="text-red-500">{warning}</p>}
+      {warning && <p className="text-red-500 dark:text-red-400">{warning}</p>}
       <CompressionOptions 
         onCompressionChange={handleCompressionLevelChange} 
         onZipFileNameChange={handleZipFileNameChange}
@@ -204,24 +208,24 @@ export default function Upload({ files, setFiles }) {
         compressionLevel={compressionLevel}
         generateNewName={generateNewName}
       />
-      <button onClick={zipFiles} className="my-2 p-2 bg-blue-500 text-white rounded" disabled={loading}>
+      <button onClick={zipFiles} className="my-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600" disabled={loading}>
         {loading ? 'Compressing...' : 'Download ZIP'}
       </button>
       {loading && (
-        <div className="w-full bg-gray-800 rounded mt-4">
+        <div className="w-full bg-gray-200 dark:bg-gray-800 rounded mt-4">
           <div className="bg-blue-500 text-xs font-medium text-white text-center p-0.5 leading-none rounded" style={{ width: `${progress}%` }}> 
             {progress.toFixed(2)}%
           </div>
         </div>
       )}
       {loading && (
-        <div className="text-white mt-2">
+        <div className="text-gray-900 dark:text-white mt-2">
           <p>Current file: {currentFile}</p>
           <p>ETA: {eta} seconds</p>
         </div>
       )}
       {files.length > 0 && (
-        <div className="text-white mt-2">
+        <div className="text-gray-900 dark:text-white mt-2">
           <p>{files.length} files added.</p>
         </div>
       )}

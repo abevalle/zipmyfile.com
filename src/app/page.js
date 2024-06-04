@@ -1,4 +1,3 @@
-// src/app/page.js
 'use client'
 import { useState } from 'react';
 import Nav from './Nav';
@@ -14,7 +13,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-800">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
       <Nav />
       <main className="flex-grow">
         <div className="flex flex-col md:flex-row md:space-x-4 p-4">
