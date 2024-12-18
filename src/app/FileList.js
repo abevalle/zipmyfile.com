@@ -14,42 +14,53 @@ const FileTree = ({ node, path = '', onDelete, collapsedDirs, toggleCollapse }) 
     const isFile = !!node[key].file;
 
     return (
-      <div key={fullPath} className="relative">
-        <div className="flex items-center space-x-2">
-          {!isFile && (
-            <span className="absolute left-0 top-1/2 w-4 border-l-2 border-gray-500 dark:border-gray-400" style={{ transform: 'translateY(-50%)' }}></span>
-          )}
-          <span className="absolute left-4 top-0 h-full border-b-2 border-gray-500 dark:border-gray-400" style={{ transform: 'translateY(-50%)' }}></span>
-          <FontAwesomeIcon
-            icon={isFile ? faFile : collapsedDirs[fullPath] ? faFolder : faFolderOpen}
-            className={isFile ? 'text-blue-500 ml-4' : 'text-yellow-500 cursor-pointer ml-4'}
-            onClick={() => !isFile && toggleCollapse(fullPath)}
-          />
-          <span className={`text-gray-900 dark:text-white ${isFile ? '' : 'font-bold cursor-pointer'}`} onClick={() => !isFile && toggleCollapse(fullPath)}>
-            {key}
-          </span>
-          <span className="text-gray-400 text-sm">{isFile && `${(node[key].file.size / 1024).toFixed(2)} KB`}</span>
-          <button onClick={() => handleDelete(fullPath)} className="ml-auto text-red-500 hover:text-red-700">
-            <FontAwesomeIcon icon={faTrashAlt} />
+      <div key={fullPath} className="group">
+        <div className="flex items-center py-2 px-3 rounded-lg hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors duration-200">
+          <div className="flex items-center flex-1 min-w-0">
+            <button
+              onClick={() => !isFile && toggleCollapse(fullPath)}
+              className={`flex items-center space-x-2 min-w-0 ${!isFile ? 'cursor-pointer' : ''}`}
+            >
+              <FontAwesomeIcon
+                icon={isFile ? faFile : collapsedDirs[fullPath] ? faFolder : faFolderOpen}
+                className={`w-4 h-4 ${
+                  isFile 
+                    ? 'text-indigo-500 dark:text-indigo-400' 
+                    : 'text-amber-500 dark:text-amber-400'
+                }`}
+              />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
+                {key}
+              </span>
+            </button>
+            {isFile && (
+              <span className="ml-2 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                {(node[key].file.size / 1024).toFixed(2)} KB
+              </span>
+            )}
+          </div>
+          <button 
+            onClick={() => onDelete(fullPath)}
+            className="ml-2 p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 
+              text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
+          >
+            <FontAwesomeIcon icon={faTrashAlt} className="w-4 h-4" />
           </button>
         </div>
         {!isFile && !collapsedDirs[fullPath] && (
-          <div className="ml-6 pl-2 border-l-2 border-gray-500 dark:border-gray-400">
-            <FileTree node={node[key]} path={fullPath} onDelete={onDelete} collapsedDirs={collapsedDirs} toggleCollapse={toggleCollapse} />
+          <div className="ml-4 pl-4 border-l-2 border-gray-200 dark:border-gray-700">
+            <FileTree 
+              node={node[key]} 
+              path={fullPath} 
+              onDelete={onDelete} 
+              collapsedDirs={collapsedDirs} 
+              toggleCollapse={toggleCollapse} 
+            />
           </div>
         )}
       </div>
     );
   });
-
-  function handleDelete(fullPath) {
-    onDelete(fullPath);
-    ReactGA.event({
-      category: 'User Interaction',
-      action: 'Delete File',
-      label: `Deleted file: ${fullPath}`,
-    });
-  }
 };
 
 export default function FileList({ files = [], onDelete }) {
@@ -65,42 +76,60 @@ export default function FileList({ files = [], onDelete }) {
   };
 
   if (files.length === 0) {
-    return <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded text-gray-900 dark:text-white">No files staged for compression</div>;
+    return (
+      <div className="rounded-2xl bg-white/50 backdrop-blur-lg dark:bg-gray-800/50 p-6 shadow-xl text-center">
+        <div className="text-gray-500 dark:text-gray-400">
+          <FontAwesomeIcon icon={faFolder} className="w-12 h-12 mb-4 opacity-50" />
+          <p>No files staged for compression</p>
+        </div>
+      </div>
+    );
   }
 
-  // Group files by directories
-  const fileTree = files.reduce((acc, fileObj) => {
-    const parts = fileObj.path.split('/');
-    let current = acc;
-    parts.forEach((part, index) => {
-      if (!current[part]) {
-        current[part] = index === parts.length - 1 ? fileObj : {};
-      }
-      current = current[part];
-    });
-    return acc;
-  }, {});
-
-  const toggleCollapse = (path) => {
-    setCollapsedDirs((prev) => ({
-      ...prev,
-      [path]: !prev[path]
-    }));
-  };
-
   return (
-    <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded overflow-y-auto max-h-[75vh] md:max-h-[75vh] relative">
-      <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Files staged for compression:</h2>
-      <button 
-        onClick={deleteAllFiles} 
-        className="absolute top-2 right-2 text-gray-900 dark:text-white" 
-        title="Delete all files"
-      >
-        <FontAwesomeIcon icon={faBroom} />
-      </button>
-      <div className="ml-2">
-        <FileTree node={fileTree} onDelete={onDelete} collapsedDirs={collapsedDirs} toggleCollapse={toggleCollapse} />
+    <div className="rounded-2xl bg-white/50 backdrop-blur-lg dark:bg-gray-800/50 p-6 shadow-xl">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-rose-500">
+          Files ({files.length})
+        </h2>
+        <button 
+          onClick={deleteAllFiles} 
+          className="p-2 text-gray-500 hover:text-red-500 dark:text-gray-400 
+            dark:hover:text-red-400 transition-colors duration-200" 
+          title="Clear all files"
+        >
+          <FontAwesomeIcon icon={faBroom} className="w-5 h-5" />
+        </button>
+      </div>
+      <div className="overflow-y-auto max-h-[calc(100vh-24rem)] rounded-lg">
+        <FileTree 
+          node={buildFileTree(files)} 
+          onDelete={onDelete} 
+          collapsedDirs={collapsedDirs} 
+          toggleCollapse={toggleCollapse}
+        />
       </div>
     </div>
   );
+
+  function buildFileTree(files) {
+    return files.reduce((acc, fileObj) => {
+      const parts = fileObj.path.split('/');
+      let current = acc;
+      parts.forEach((part, index) => {
+        if (!current[part]) {
+          current[part] = index === parts.length - 1 ? fileObj : {};
+        }
+        current = current[part];
+      });
+      return acc;
+    }, {});
+  }
+
+  function toggleCollapse(path) {
+    setCollapsedDirs(prev => ({
+      ...prev,
+      [path]: !prev[path]
+    }));
+  }
 }

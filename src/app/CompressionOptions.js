@@ -37,31 +37,45 @@ export default function CompressionOptions({ onCompressionChange, onZipFileNameC
   };
 
   return (
-    <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded mt-4">
-      <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Compression Options</h2>
-      <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
-        <div className="flex flex-col items-start md:w-1/2 relative">
-          <label htmlFor="zipFileName" className="text-gray-900 dark:text-white mb-2">ZIP File Name:</label>
-          <div className="flex w-full">
+    <div className="p-6 bg-white/50 backdrop-blur-lg dark:bg-gray-800/50 rounded-xl shadow-lg mt-6">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        Compression Options
+      </h2>
+      <div className="flex flex-col space-y-6">
+        <div className="space-y-3">
+          <label htmlFor="zipFileName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            ZIP File Name
+          </label>
+          <div className="flex gap-2">
             <input
               type="text"
               id="zipFileName"
               value={zipFileName}
               onChange={handleZipFileNameChange}
-              className="flex-grow p-2 bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-l text-gray-900 dark:text-white truncate"
+              className="flex-1 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all"
               placeholder="Enter ZIP file name"
             />
             <button
-              type="button"
               onClick={handleGenerateNewName}
-              className="p-2 bg-blue-500 text-white rounded-r hover:bg-blue-600"
+              className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 
+                transition-all duration-200 focus:outline-none focus:ring-2 
+                focus:ring-offset-2 focus:ring-indigo-500"
+              title="Generate new name"
             >
-              <FontAwesomeIcon icon={faSyncAlt} />
+              <FontAwesomeIcon icon={faSyncAlt} className="w-5 h-5" />
             </button>
           </div>
         </div>
-        <div className="flex flex-col items-start md:w-1/2">
-          <label htmlFor="compressionLevel" className="text-gray-900 dark:text-white mb-2">Compression Level: {compressionLevel}</label>
+
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <label htmlFor="compressionLevel" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Compression Level
+            </label>
+            <span className="text-sm font-semibold text-indigo-500 dark:text-indigo-400">
+              {compressionLevel}
+            </span>
+          </div>
           <input
             type="range"
             id="compressionLevel"
@@ -69,11 +83,11 @@ export default function CompressionOptions({ onCompressionChange, onZipFileNameC
             max="9"
             value={compressionLevel}
             onChange={handleCompressionLevelChange}
-            className="w-full"
+            className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
           />
-          <div className="flex justify-between w-full text-gray-400 dark:text-gray-500 text-xs mt-1">
-            <span>Low</span>
-            <span>High</span>
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+            <span>Faster compression</span>
+            <span>Better compression</span>
           </div>
         </div>
       </div>

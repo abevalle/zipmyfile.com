@@ -13,15 +13,32 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
+    <div className="min-h-screen flex flex-col">
       <Nav />
       <main className="flex-grow">
-        <div className="flex flex-col md:flex-row md:space-x-4 p-4">
-          <div className="md:w-1/2">
-            <Upload files={files} setFiles={setFiles} />
+        {/* Hero Section */}
+        <div className="relative overflow-hidden py-16 sm:py-24">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-rose-500">
+                Compress Files in Seconds
+              </h1>
+              <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
+                Free, secure, and works right in your browser. No signup required.
+              </p>
+            </div>
           </div>
-          <div className="md:w-1/2">
-            <FileList files={files} onDelete={handleDelete} />
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24"> {/* Added pb-24 for bottom padding */}
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="lg:w-1/2">
+              <Upload files={files} setFiles={setFiles} />
+            </div>
+            <div className="lg:w-1/2">
+              <FileList files={files} onDelete={handleDelete} />
+            </div>
           </div>
         </div>
       </main>
